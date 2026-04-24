@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Memory Pattern Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="frame">
+    <h2>Frame 1:</h2>
+	<h2>Pattern</h2>
+    <div style="position: relative; display: inline-block;">
+        <div id="cover">
+            <img src="cover.jpg" alt="Cover">
+        </div>
+        <div id="grid1" class="grid"></div>
+    </div><br>
+    <button onclick="startGame()">START NEW GAME</button>
+    
+</div>
+
+<div class="divider"></div>
+<div class="frame">
+    <h2>FRAME 2:</h2>
+	<h2>Match The Pattern</h2>
+    <div id="grid2" class="grid hidden-grid"></div>
+        <p id="status" style="font-weight: bold;">Press Start!</p>
+        <button id="submitBtn" onclick="checkResult()" style="visibility: hidden;">SUBMIT ANSWER</button>
+    </div>
+
+    <script>
+        const grid1 = document.getElementById('grid1');
+        const grid2 = document.getElementById('grid2');
+        const cover = document.getElementById('cover');
+        const status = document.getElementById('status');
+        const submitBtn = document.getElementById('submitBtn');
+
+        function initGrids() {
+            grid1.innerHTML = '';
+            grid2.innerHTML = '';
+            for (let i = 0; i < 25; i++) {
+                grid1.innerHTML += `<input type="checkbox" disabled>`;
+                grid2.innerHTML += `<input type="checkbox">`;
+            }
+        }
+
+        function startGame() {
+            initGrids();
+            
+            cover.style.display = "none"; 
+            
+            grid2.classList.add('hidden-grid');
+            submitBtn.style.visibility = "hidden";
+            
+            status.innerText = "Memorize for 5 seconds...";
+            status.style.color = "black";
+
+            const pBoxes = grid1.querySelectorAll('input');
+            pBoxes.forEach(cb => {
+                cb.checked = Math.random() > 0.7; 
+            });
+
+            setTimeout(() => {
+                cover.style.display = "flex"; 
+                
+                grid2.classList.remove('hidden-grid');
+                submitBtn.style.visibility = "visible";
+                
+                status.innerText = "Now, reproduce the pattern!";
+            }, 5000);
+        }
+
+        function checkResult() {
+            const pBoxes = grid1.querySelectorAll('input');
+            const uBoxes = grid2.querySelectorAll('input');
+            let isMatch = true;
+
+            for (let i = 0; i < 25; i++) {
+                if (pBoxes[i].checked !== uBoxes[i].checked) {
+                    isMatch = false;
+                    break;
+                }
+            }
+            cover.style.display = "none"; 
+            if (isMatch) {
+                status.innerText = "WINNER!";
+                status.style.color = "green";
+            } else {
+                status.innerText = "LOSE!";
+                status.style.color = "red";
+            }
+        }
+
+        initGrids();
+    </script>
+</body>
+</html>
